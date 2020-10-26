@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\Programming\cocos2d-x\BottleAdventure\proj.win32\CMakeFiles\b5ee9a16cf465cf8459cc61a576c5e07\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{E21AA110-BE42-3289-83AA-1357BA2DF927}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

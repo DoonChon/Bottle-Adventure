@@ -1,0 +1,2 @@
+D:\Programming\cocos2d-x\BottleAdventure\proj.win32\lib\Debug\external.pdb
+D:\Programming\cocos2d-x\BottleAdventure\proj.win32\engine\external\external.dir\Debug\external.pdb

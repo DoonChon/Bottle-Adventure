@@ -1,0 +1,2 @@
+D:\Programming\cocos2d-x\BottleAdventure\proj.win32\lib\Debug\ext_poly2tri.pdb
+D:\Programming\cocos2d-x\BottleAdventure\proj.win32\engine\external\poly2tri\ext_poly2tri.dir\Debug\ext_poly2tri.pdb
