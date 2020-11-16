@@ -44,24 +44,22 @@ bool HelloWorld::init()
     loading->setPosition(Vec2(window.width / 2, 32));
     ui->addChild(loading, 2);
 
-    // 다이얼로그 (로딩실패, 코딩 실패(...?))
-    /* dialog_bg = LayerColor::create(Color4B(0, 0, 0, 120));
-    dialog_bg->setAnchorPoint(Vec2(0, 0));
+    // 다이얼로그
+    dialog_bg = LayerColor::create(Color4B(0, 0, 0, 160));
     dialog_bg->setPosition(Vec2(0, 0));
 
     dialog = LayerColor::create(Color4B(255, 255, 255, 255), window.width / 2, window.height / 2);
-    dialog->setPosition(Vec2(window.width / 2, window.height / 2));
-    dialog_bg->addChild(dialog, 1);
+    dialog_bg->addChild(dialog);
 
-    dialog_title = Label::createWithTTF("오류가 발생했어요!", "fonts/CookieRun Bold.ttf", 32);
-    dialog_title->setPosition(Vec2(window.width / 2, (dialog->getContentSize().height / 2) + dialog->getPositionY() - 48));
-    dialog_title->setTextColor(Color4B(0, 0, 0, 255));
-    dialog->addChild(dialog_title);
+    dialog_title = Label::createWithTTF("오류가 발생했어요!", "fonts/CookieRun Bold.ttf", 48);
+    dialog_title->setPosition(Vec2(window.width / 2, window.height / 2 + 128));
+    dialog_title->setTextColor(Color4B(3, 154, 229, 255));
+    dialog_bg->addChild(dialog_title);
 
-    dialog_msg = Label::createWithTTF("리소스를 찾을 수 없어요!\n게임을 재설치해주신 뒤 다시 시도해주세요.", "fonts/CookieRun Regular.ttf", 16);
-    dialog_msg->setPosition(Vec2(window.width / 2, dialog->getPositionY() / 2));
+    dialog_msg = Label::createWithTTF("리소스를 찾을 수 없어요!\n게임을 재설치해주신 뒤 다시 시도해주세요.", "fonts/CookieRun Regular.ttf", 32);
+    dialog_msg->setPosition(Vec2(window.width / 2, window.height / 2));
     dialog_msg->setTextColor(Color4B(0, 0, 0, 255));
-    dialog->addChild(dialog_msg);
+    dialog_bg->addChild(dialog_msg);
 
     ok_button_frame = SpriteFrameCache::getInstance();
     ok_button_frame->addSpriteFramesWithFile("KR/OK_button.plist");
@@ -73,17 +71,12 @@ bool HelloWorld::init()
 
     dialog_button = MenuItemSprite::create(dialog_normal_button, dialog_selected_button, CC_CALLBACK_1(HelloWorld::menuCallback, this));
     dialog_menu = Menu::create(dialog_button, NULL);
-    dialog_menu->setPosition(Vec2(window.width / 2, dialog->getPositionY() - (dialog->getContentSize().height / 2) + 54));
-    dialog->addChild(dialog_menu);
+    dialog_menu->setPosition(Vec2(window.width / 2, window.height / 5));
+    dialog_bg->addChild(dialog_menu); 
 
-    dialog_bg->setOpacity(0);
-
-    ui->addChild(dialog_bg, 3); */
+    ui->addChild(dialog_bg, 3);
 
     this->addChild(ui, 1);
-
-    HelloWorld::check();
-
     return true;
 }
 
@@ -93,7 +86,7 @@ void HelloWorld::startMain()
     Director::getInstance()->replaceScene(TransitionFade::create(0.5, scene));
 }
 
-void HelloWorld::check(t)
+void HelloWorld::check()
 {
     int process = 0;
     vector<string> resources = { "bottle.png", "unlocked.png", "fonts/CookieRun Regular.ttf", "fonts/CookieRun Bold.ttf" };
@@ -105,7 +98,6 @@ void HelloWorld::check(t)
     }
     if (process == resources.size()) {
         loading->setString("화면을 눌러주세요!");
-        finished = true;
     }
     else {
         
@@ -127,6 +119,5 @@ void HelloWorld::onTouchesMoved(const std::vector<Touch*>& touches, Event* unuse
 void HelloWorld::onTouchesEnded(const std::vector<Touch*>& touches, Event* unused_event)
 {
     if (finished) {
-        HelloWorld::startMain();
     }
 }

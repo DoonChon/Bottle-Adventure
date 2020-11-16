@@ -15,6 +15,7 @@ bool Main::init()
     //init stat
     xp = {};
     yp = {};
+    window = Director::getInstance()->getWinSize();
 
     bg = Layer::create();
     bg_img = Sprite::create("bg.png");
@@ -27,8 +28,6 @@ bool Main::init()
     ui = Layer::create();
     this->addChild(ui, 1);
     
-    window = Director::getInstance()->getWinSize();
-
     // 터치 이벤트 감지 -> android 지원 (iOS도 지원하고싶다...)
     auto listener = EventListenerTouchAllAtOnce::create();
     listener->onTouchesBegan = CC_CALLBACK_2(Main::onTouchesBegan, this);
@@ -59,7 +58,7 @@ void Main::onTouchesEnded(const std::vector<Touch*>& touches, Event* unused_even
 {
     for (Touch* touch : touches) {
         float x = touch->getLocation().x;
-        float y = touch->getLocation().y - (window.height / 3);
+        float y = touch->getLocation().y - (window.height / 5);
         xp.push_back(x);
         yp.push_back(y);
     }
