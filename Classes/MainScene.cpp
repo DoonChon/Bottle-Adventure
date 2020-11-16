@@ -13,19 +13,18 @@ bool Main::init()
     }
 
     //init stat
-    coin = 0;
-    ruby = 0;
-    star = 0;
-    level = 0;
-    exp = 0;
-    bottles = 0;
-    updated = 0;
+    xp = {};
+    yp = {};
 
-    bg = LayerColor::create(Color4B(255, 255, 255, 255));
+    bg = Layer::create();
+    bg_img = Sprite::create("bg.png");
+    bg_img->setContentSize(window);
+    bg_img->setAnchorPoint(Vec2(0, 0));
+    bg_img->setPosition(Vec2(0, 0));
+    bg->addChild(bg_img, 1);
     this->addChild(bg, 0);
 
     ui = Layer::create();
-
     this->addChild(ui, 1);
     
     window = Director::getInstance()->getWinSize();
@@ -44,10 +43,9 @@ bool Main::init()
 
 void Main::onTouchesBegan(const std::vector<Touch*>& touches, Event* unused_event)
 {
-    PolygonInfo pinfo = AutoPolygon::generatePolygon("bottle.png");
-    Sprite* bottle = Sprite::create(pinfo);
+    Sprite* bottle = Sprite::create("bottle.png");
     bottle->setPosition(Vec2(window.width / 10, window.height / 3));
-    bottle->setScale(0.3);
+    bottle->setAnchorPoint(Vec2(0.5, 0.5));
     bottle->setName(to_string(bottles));
     ui->addChild(bottle, 2);
     bottles++;
@@ -61,20 +59,26 @@ void Main::onTouchesEnded(const std::vector<Touch*>& touches, Event* unused_even
 {
     for (Touch* touch : touches) {
         float x = touch->getLocation().x;
-        float y = touch->getLocation().y;
-        // 터치 좌표 받아서 일케절케 하셈 ㅅㄱ
+        float y = touch->getLocation().y - (window.height / 3);
+        xp.push_back(x);
+        yp.push_back(y);
     }
 }
 
-// 이거 비동기적으로 수정해야함
 void Main::update(float dt)
 {
     for (int i = 0; i < bottles; i++) {
-        auto target = ui->getChildByName(to_string(i));
-        if (target != nullptr) {
-            target->setPositionX(target->getPositionX() + NormalSpeed);
-            if (target->getPositionX() >= window.width - (window.width / 10)) {
-                ui->removeChildByName(to_string(i));
+        if (xp.size() > i && yp.size() > i) {
+            float toX = xp.at(i);
+            float toY = yp.at(i);
+            auto target = ui->getChildByName(to_string(i));
+            if (target != nullptr) {
+                target->setPositionX(target->getPositionX() + (toX / NormalSpeed));
+                target->setPositionY(target->getPositionY() + (toY / NormalSpeed));
+                target->setRotation(target->getRotation() + NormalSpeed);
+                if (target->getPositionX() >= toX && target->getPositionY() >= toY) {
+                    ui->removeChildByName(to_string(i));
+                }
             }
         }
     }

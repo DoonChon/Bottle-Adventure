@@ -16,6 +16,7 @@ public:
     virtual bool init();
 
     Size window;
+    bool finished = false;
 
     FileUtils* file;
     SpriteFrameCache* ok_button_frame;
@@ -38,9 +39,12 @@ public:
     LayerColor* dialog_bg;
     LayerColor* dialog;
 
-    void startMain(float dt);
-    void check(float dt);
+    void startMain();
+    void check();
     void menuCallback(Ref* sender);
+    void onTouchesBegan(const std::vector<Touch*>& touches, Event* unused_event);
+    void onTouchesMoved(const std::vector<Touch*>& touches, Event* unused_event);
+    void onTouchesEnded(const std::vector<Touch*>& touches, Event* unused_event);
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);

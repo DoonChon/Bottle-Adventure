@@ -15,14 +15,16 @@ public:
 
     virtual bool init();
 
-    const int NormalSpeed = 20;
-    int coin, ruby, star, level, exp, bottles, updated;
+    const int NormalSpeed = 100;
+    int coin = 0, ruby = 0, star = 0, level = 0, exp = 0, bottles = 0, updated = 0;
     vector<string> unlocked_bottle;
     vector<int> item_count;
+    vector<float> xp, yp;
 
     Size window;
 
-    LayerColor* bg;
+    Layer* bg;
+    Sprite* bg_img;
     Layer* ui;
 
     void onTouchesBegan(const std::vector<Touch*>& touches, Event* unused_event);

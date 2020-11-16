@@ -82,30 +82,30 @@ bool HelloWorld::init()
 
     this->addChild(ui, 1);
 
-    scheduleOnce(SEL_SCHEDULE(&HelloWorld::check), 1.5f);
+    HelloWorld::check();
 
     return true;
 }
 
-void HelloWorld::startMain(float dt)
+void HelloWorld::startMain()
 {
     Scene* scene = Main::create();
     Director::getInstance()->replaceScene(TransitionFade::create(0.5, scene));
 }
 
-void HelloWorld::check(float dt)
+void HelloWorld::check(t)
 {
     int process = 0;
     vector<string> resources = { "bottle.png", "unlocked.png", "fonts/CookieRun Regular.ttf", "fonts/CookieRun Bold.ttf" };
     for (int i = 0; i < resources.size(); i++) {
         if (file->isFileExist(resources[i])) {
-            pg_bar->setPositionX(pg_bar->getPositionX() + ((window.width / 2) / resources.size()));
+       // pg_bar->setPositionX(pg_bar->getPositionX() + ((window.width / 2) / resources.size()));
             process++;
         }
     }
     if (process == resources.size()) {
-        loading->setString("로딩중이에요...");
-        scheduleOnce(SEL_SCHEDULE(&HelloWorld::startMain), 1.5f);
+        loading->setString("화면을 눌러주세요!");
+        finished = true;
     }
     else {
         
@@ -114,4 +114,19 @@ void HelloWorld::check(float dt)
 
 void HelloWorld::menuCallback(Ref* sender)
 {
+}
+
+void HelloWorld::onTouchesBegan(const std::vector<Touch*>& touches, Event* unused_event)
+{
+}
+
+void HelloWorld::onTouchesMoved(const std::vector<Touch*>& touches, Event* unused_event)
+{
+}
+
+void HelloWorld::onTouchesEnded(const std::vector<Touch*>& touches, Event* unused_event)
+{
+    if (finished) {
+        HelloWorld::startMain();
+    }
 }
