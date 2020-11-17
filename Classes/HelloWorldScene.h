@@ -37,10 +37,11 @@ public:
     LayerColor* pg_bg;
     LayerColor* pg_bar;
     LayerColor* dialog_bg;
-    LayerColor* dialog;
+    Sprite* dialog;
 
     void startMain();
     void check();
+    void error(string filename);
     void menuCallback(Ref* sender);
     void onTouchesBegan(const std::vector<Touch*>& touches, Event* unused_event);
     void onTouchesMoved(const std::vector<Touch*>& touches, Event* unused_event);

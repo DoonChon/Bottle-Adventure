@@ -23,6 +23,9 @@ bool HelloWorld::init()
     ui = Layer::create();
 
     title = Label::createWithTTF("병들의 모험", "fonts/CookieRun Bold.ttf", 64);
+    if (title == nullptr) {
+
+    }
     title->setPosition(Vec2(window.width / 2, (window.height / 2) + 128));
     title->setTextColor(Color4B(0, 0, 0, 255));
     ui->addChild(title, 0);
@@ -48,15 +51,17 @@ bool HelloWorld::init()
     dialog_bg = LayerColor::create(Color4B(0, 0, 0, 160));
     dialog_bg->setPosition(Vec2(0, 0));
 
-    dialog = LayerColor::create(Color4B(255, 255, 255, 255), window.width / 2, window.height / 2);
+    dialog = Sprite::create("dialog.png");
+    dialog->setPosition(Vec2(window.width / 2, window.height / 2));
+    dialog->setContentSize(Size(window.width / 2, window.height / 2));
     dialog_bg->addChild(dialog);
 
-    dialog_title = Label::createWithTTF("오류가 발생했어요!", "fonts/CookieRun Bold.ttf", 48);
-    dialog_title->setPosition(Vec2(window.width / 2, window.height / 2 + 128));
+    dialog_title = Label::createWithTTF("오류가 발생했어요!", "fonts/CookieRun Bold.ttf", 32);
+    dialog_title->setPosition(Vec2(window.width / 2, window.height / 2 + 84));
     dialog_title->setTextColor(Color4B(3, 154, 229, 255));
     dialog_bg->addChild(dialog_title);
 
-    dialog_msg = Label::createWithTTF("리소스를 찾을 수 없어요!\n게임을 재설치해주신 뒤 다시 시도해주세요.", "fonts/CookieRun Regular.ttf", 32);
+    dialog_msg = Label::createWithTTF("리소스를 찾을 수 없어요!\n게임을 재설치해주신 뒤 다시 시도해주세요.", "fonts/CookieRun Regular.ttf", 24);
     dialog_msg->setPosition(Vec2(window.width / 2, window.height / 2));
     dialog_msg->setTextColor(Color4B(0, 0, 0, 255));
     dialog_bg->addChild(dialog_msg);
@@ -71,12 +76,15 @@ bool HelloWorld::init()
 
     dialog_button = MenuItemSprite::create(dialog_normal_button, dialog_selected_button, CC_CALLBACK_1(HelloWorld::menuCallback, this));
     dialog_menu = Menu::create(dialog_button, NULL);
-    dialog_menu->setPosition(Vec2(window.width / 2, window.height / 5));
+    dialog_menu->setPosition(Vec2(window.width / 2, window.height / 3));
     dialog_bg->addChild(dialog_menu); 
 
     ui->addChild(dialog_bg, 3);
+    dialog_bg->setVisible(false);
+    dialog_bg->setOpacity(0);
 
     this->addChild(ui, 1);
+    HelloWorld::check();
     return true;
 }
 
@@ -98,10 +106,19 @@ void HelloWorld::check()
     }
     if (process == resources.size()) {
         loading->setString("화면을 눌러주세요!");
+        HelloWorld::error("asdf");
+
     }
     else {
         
     }
+}
+
+void HelloWorld::error(string filename)
+{
+    FadeTo* fade = FadeTo::create(0.3f, 160);
+    dialog_bg->setVisible(true);
+    dialog_bg->runAction(fade);
 }
 
 void HelloWorld::menuCallback(Ref* sender)
