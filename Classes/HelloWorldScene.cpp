@@ -14,6 +14,7 @@ bool HelloWorld::init()
     }
 
     window = Director::getInstance()->getWinSize();
+    finished = false;
 
     file = FileUtils::getInstance();
 
@@ -24,7 +25,7 @@ bool HelloWorld::init()
 
     title = Label::createWithTTF("병들의 모험", "fonts/CookieRun Bold.ttf", 64);
     if (title == nullptr) {
-
+        ccMessageBox("게임 파일이 손상되어 실행이 불가능합니다. 게임 재설치 후 다시 시도해주세요.", "오류 발생!");
     }
     title->setPosition(Vec2(window.width / 2, (window.height / 2) + 128));
     title->setTextColor(Color4B(0, 0, 0, 255));
@@ -84,14 +85,21 @@ bool HelloWorld::init()
     dialog_bg->setOpacity(0);
 
     this->addChild(ui, 1);
+
+    // 터치 이벤트 감지 -> android 지원 (iOS도 지원하고싶다...)
+    auto listen = EventListenerTouchAllAtOnce::create();
+    listen->onTouchesBegan = CC_CALLBACK_2(HelloWorld::onTouchesBegan, this);
+    listen->onTouchesEnded = CC_CALLBACK_2(HelloWorld::onTouchesEnded, this);
+    listen->onTouchesMoved = CC_CALLBACK_2(HelloWorld::onTouchesMoved, this);
+    _eventDispatcher->addEventListenerWithFixedPriority(listen, 1);
+
     HelloWorld::check();
     return true;
 }
 
 void HelloWorld::startMain()
 {
-    Scene* scene = Main::create();
-    Director::getInstance()->replaceScene(TransitionFade::create(0.5, scene));
+    
 }
 
 void HelloWorld::check()
@@ -100,14 +108,13 @@ void HelloWorld::check()
     vector<string> resources = { "bottle.png", "unlocked.png", "fonts/CookieRun Regular.ttf", "fonts/CookieRun Bold.ttf" };
     for (int i = 0; i < resources.size(); i++) {
         if (file->isFileExist(resources[i])) {
-       // pg_bar->setPositionX(pg_bar->getPositionX() + ((window.width / 2) / resources.size()));
+            pg_bar->setPositionX(pg_bar->getPositionX() + ((window.width / 1) / resources.size()));
             process++;
         }
     }
     if (process == resources.size()) {
-        loading->setString("화면을 눌러주세요!");
-        HelloWorld::error("asdf");
-
+        loading->setString("화면을 터치해주세요!");
+        finished = true;
     }
     else {
         
@@ -136,5 +143,7 @@ void HelloWorld::onTouchesMoved(const std::vector<Touch*>& touches, Event* unuse
 void HelloWorld::onTouchesEnded(const std::vector<Touch*>& touches, Event* unused_event)
 {
     if (finished) {
+        Scene* scene = Main::create();
+        Director::getInstance()->replaceScene(TransitionFade::create(0.5, scene));
     }
 }

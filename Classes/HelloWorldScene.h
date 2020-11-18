@@ -43,9 +43,9 @@ public:
     void check();
     void error(string filename);
     void menuCallback(Ref* sender);
-    void onTouchesBegan(const std::vector<Touch*>& touches, Event* unused_event);
-    void onTouchesMoved(const std::vector<Touch*>& touches, Event* unused_event);
-    void onTouchesEnded(const std::vector<Touch*>& touches, Event* unused_event);
+    virtual void onTouchesBegan(const std::vector<Touch*>& touches, Event* unused_event);
+    virtual void onTouchesMoved(const std::vector<Touch*>& touches, Event* unused_event);
+    virtual void onTouchesEnded(const std::vector<Touch*>& touches, Event* unused_event);
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
