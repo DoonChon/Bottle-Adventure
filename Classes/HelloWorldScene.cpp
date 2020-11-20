@@ -92,14 +92,12 @@ bool HelloWorld::init()
     listen->onTouchesEnded = CC_CALLBACK_2(HelloWorld::onTouchesEnded, this);
     listen->onTouchesMoved = CC_CALLBACK_2(HelloWorld::onTouchesMoved, this);
     _eventDispatcher->addEventListenerWithFixedPriority(listen, 1);
-
     HelloWorld::check();
     return true;
 }
 
-void HelloWorld::startMain()
+void HelloWorld::startMain(float dt)
 {
-    
 }
 
 void HelloWorld::check()
@@ -113,7 +111,7 @@ void HelloWorld::check()
         }
     }
     if (process == resources.size()) {
-        loading->setString("화면을 터치해주세요!");
+        loading->setString("로딩중이에요!");
         finished = true;
     }
     else {
@@ -143,7 +141,7 @@ void HelloWorld::onTouchesMoved(const std::vector<Touch*>& touches, Event* unuse
 void HelloWorld::onTouchesEnded(const std::vector<Touch*>& touches, Event* unused_event)
 {
     if (finished) {
-        Scene* scene = Main::create();
-        Director::getInstance()->replaceScene(TransitionFade::create(0.5, scene));
+        auto pScene = Main::createScene();
+        Director::getInstance()->replaceScene(pScene);
     }
 }

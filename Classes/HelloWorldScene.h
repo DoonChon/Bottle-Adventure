@@ -39,7 +39,7 @@ public:
     LayerColor* dialog_bg;
     Sprite* dialog;
 
-    void startMain();
+    void startMain(float dt);
     void check();
     void error(string filename);
     void menuCallback(Ref* sender);

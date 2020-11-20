@@ -16,6 +16,7 @@ bool Main::init()
     xp = {};
     yp = {};
     window = Director::getInstance()->getWinSize();
+    bottles = 0;
 
     bg = Layer::create();
     bg_img = Sprite::create("bg.png");
@@ -27,6 +28,12 @@ bool Main::init()
 
     ui = Layer::create();
     this->addChild(ui, 1);
+
+    auto a = SpriteFrame::create("");
+    auto slime = Sprite::createWithSpriteFrameName("slime1.png");
+    slime->setPosition(Vec2(window.width / 2, window.height / 2));
+    ui->addChild(slime);
+
     
     // 터치 이벤트 감지 -> android 지원 (iOS도 지원하고싶다...)
     auto listener = EventListenerTouchAllAtOnce::create();
@@ -42,7 +49,7 @@ bool Main::init()
 
 void Main::onTouchesBegan(const std::vector<Touch*>& touches, Event* unused_event)
 {
-    Sprite* bottle = Sprite::create("bottle.png");
+    auto bottle = Sprite::create("bottle.png");
     bottle->setPosition(Vec2(window.width / 10, window.height / 3));
     bottle->setAnchorPoint(Vec2(0.5, 0.5));
     bottle->setName(to_string(bottles));
