@@ -16,7 +16,6 @@ bool Main::init()
     xp = {};
     yp = {};
     window = Director::getInstance()->getWinSize();
-    bottles = 0;
 
     bg = Layer::create();
     bg_img = Sprite::create("bg.png");
@@ -29,11 +28,11 @@ bool Main::init()
     ui = Layer::create();
     this->addChild(ui, 1);
 
-    auto a = SpriteFrame::create("");
-    auto slime = Sprite::createWithSpriteFrameName("slime1.png");
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("slime.plist");
+    slime = Sprite::createWithSpriteFrameName("slime1.png");
     slime->setPosition(Vec2(window.width / 2, window.height / 2));
+    slime->setName("a");
     ui->addChild(slime);
-
     
     // 터치 이벤트 감지 -> android 지원 (iOS도 지원하고싶다...)
     auto listener = EventListenerTouchAllAtOnce::create();
@@ -49,8 +48,8 @@ bool Main::init()
 
 void Main::onTouchesBegan(const std::vector<Touch*>& touches, Event* unused_event)
 {
-    auto bottle = Sprite::create("bottle.png");
-    bottle->setPosition(Vec2(window.width / 10, window.height / 3));
+    Sprite* bottle = Sprite::create("bottle.png");
+    bottle->setPosition(Vec2(window.width / 10, window.height / 2));
     bottle->setAnchorPoint(Vec2(0.5, 0.5));
     bottle->setName(to_string(bottles));
     ui->addChild(bottle, 2);
@@ -64,8 +63,8 @@ void Main::onTouchesMoved(const std::vector<Touch*>& touches, Event* unused_even
 void Main::onTouchesEnded(const std::vector<Touch*>& touches, Event* unused_event)
 {
     for (Touch* touch : touches) {
-        float x = touch->getLocation().x;
-        float y = touch->getLocation().y - (window.height / 5);
+        float x = touch->getLocation().x - (window.width / 10);
+        float y = touch->getLocation().y - (window.height / 2);
         xp.push_back(x);
         yp.push_back(y);
     }
@@ -82,10 +81,23 @@ void Main::update(float dt)
                 target->setPositionX(target->getPositionX() + (toX / NormalSpeed));
                 target->setPositionY(target->getPositionY() + (toY / NormalSpeed));
                 target->setRotation(target->getRotation() + NormalSpeed);
+                Rect targetRect = target->getBoundingBox();
+                Rect slimeRect = slime->getBoundingBox();
                 if (target->getPositionX() >= toX && target->getPositionY() >= toY) {
                     ui->removeChildByName(to_string(i));
+                } else if (targetRect.intersectsRect(slimeRect)) {
+                    ui->removeChildByName(to_string(i));
+                    printf("충돌!!!");
                 }
             }
         }
     }
+    if (frame == 30) {
+        slime->setSpriteFrame("slime2.png");
+    }
+    else if (frame == 60) {
+        frame = 0;
+        slime->setSpriteFrame("slime1.png");
+    }
+    frame++;
 }

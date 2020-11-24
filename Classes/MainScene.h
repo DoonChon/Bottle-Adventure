@@ -16,9 +16,8 @@ public:
     virtual bool init();
 
     const int NormalSpeed = 100;
-    int coin, ruby, star, level, exp, bottles, updated, hp;
+    int coin = 0, ruby = 0, star = 0, level = 0, exp = 0, bottles = 0, updated = 0, frame = 0;
     vector<string> unlocked_bottle;
-    vector<string> monster_hp;
     vector<int> item_count;
     vector<float> xp, yp;
 
@@ -26,6 +25,7 @@ public:
 
     Layer* bg;
     Sprite* bg_img;
+    Sprite* slime;
     Layer* ui;
 
     void onTouchesBegan(const std::vector<Touch*>& touches, Event* unused_event);
