@@ -16,22 +16,28 @@ public:
     virtual bool init();
 
     const int NormalSpeed = 100;
-    int coin = 0, ruby = 0, star = 0, level = 0, exp = 0, bottles = 0, updated = 0, frame = 0;
+    const int NormalBottle = 10;
+    int coin = 0, ruby = 0, star = 0, level = 0, exp = 0, bottles = 0, updated = 0, frame = 0, slimes = 0;
     vector<string> unlocked_bottle;
-    vector<int> item_count;
+    vector<int> item_count, slime_hp, slime_frame;
     vector<float> xp, yp;
+    vector<Sprite*> slime_data;
 
     Size window;
 
     Layer* bg;
     Sprite* bg_img;
-    Sprite* slime;
     Layer* ui;
+    Label* stat;
+
+    Node* temp;
 
     void onTouchesBegan(const std::vector<Touch*>& touches, Event* unused_event);
     void onTouchesMoved(const std::vector<Touch*>& touches, Event* unused_event);
     void onTouchesEnded(const std::vector<Touch*>& touches, Event* unused_event);
-    virtual void update(float dt);
+    void update(float dt);
+    void asdf(float dt);
+    void fadeOut(float dt);
 
     // implement the "static create()" method manually
     CREATE_FUNC(Main);

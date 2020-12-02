@@ -1,5 +1,5 @@
 #include "HelloWorldScene.h"
-#include "MainScene.h"
+#include "RobbyScene.h"
 
 Scene* HelloWorld::createScene()
 {
@@ -121,7 +121,7 @@ void HelloWorld::onTouchesEnded(const std::vector<Touch*>& touches, Event* unuse
 {
     if (!finished) {
 		finished = true;
-		Scene* scene = Main::create();
+		Scene* scene = Robby::create();
 		Director::getInstance()->replaceScene(TransitionFade::create(0.5, scene));
     }
 }
