@@ -3,6 +3,8 @@
 
 #include "cocos2d.h"
 
+#pragma execution_character_set("utf-8")
+
 /**
 @brief    The cocos2d Application.
 

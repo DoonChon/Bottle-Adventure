@@ -16,36 +16,17 @@ public:
     virtual bool init();
 
     Size window;
-    bool finished = false;
+    int repeated = 0;
 
     FileUtils* file;
-    SpriteFrameCache* ok_button_frame;
-
-    Label* title;
-    Label* loading;
-    Label* dialog_title;
-    Label* dialog_msg;
-
-    Sprite* dialog_normal_button;
-    Sprite* dialog_selected_button;
-
-    MenuItemSprite* dialog_button;
-    Menu* dialog_menu;
 
     LayerColor* bg;
     Layer* ui;
-    LayerColor* pg_bg;
-    LayerColor* pg_bar;
-    LayerColor* dialog_bg;
-    Sprite* dialog;
 
-    void startMain();
-    void check();
-    void error(string filename);
-    void menuCallback(Ref* sender);
-    void onTouchesBegan(const std::vector<Touch*>& touches, Event* unused_event);
-    void onTouchesMoved(const std::vector<Touch*>& touches, Event* unused_event);
-    void onTouchesEnded(const std::vector<Touch*>& touches, Event* unused_event);
+    Label* author;
+    Label* dchs_cc;
+
+    void animation(float dt);
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
