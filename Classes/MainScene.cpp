@@ -33,6 +33,17 @@ bool Main::init()
         coin = saved_data->getDoubleForKey("val1");
     }
 
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("bottle_bg.plist");
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("Robby_cloud.plist");
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("bottle.plist");
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("coin.plist");
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("bg_color.plist");
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("slime.plist");
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("touch.plist");
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("button_play.plist");
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("button_bg.plist");
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("player.plist");
+
     bg = Layer::create();
     bg_img = Sprite::create("bg.png");
     bg_img->setContentSize(window);
@@ -51,11 +62,11 @@ bool Main::init()
     bg_coins = Sprite::createWithSpriteFrameName("bg_gray.png");
     bg_coins->setContentSize(Size(248, 60));
     bg_coins->setAnchorPoint(Vec2(0, 1));
-    bg_coins->setPosition(Vec2(48, window.height - 16));
+    bg_coins->setPosition(Vec2(64, window.height - 16));
     this->addChild(bg_coins, 4);
 
     coin_icon = Sprite::createWithSpriteFrameName("coin_1.png");
-    coin_icon->setPosition(Vec2(48, bg_coins->getPositionY() - 30));
+    coin_icon->setPosition(Vec2(64, bg_coins->getPositionY() - 30));
     coin_icon->setContentSize(Size(60, 60));
     this->addChild(coin_icon, 5);
 
@@ -66,11 +77,7 @@ bool Main::init()
     this->addChild(coins, 5);
 
     // 애니메이션 정의 및 버튼 불러오기
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("slime.plist");
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("touch.plist");
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("button_play.plist");
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("button_bg.plist");
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("player.plist");
+    
 
     SpriteFrame* coin_frame_1 = SpriteFrameCache::getInstance()->getSpriteFrameByName("coin_1.png");
     SpriteFrame* coin_frame_2 = SpriteFrameCache::getInstance()->getSpriteFrameByName("coin_2.png");
@@ -111,7 +118,7 @@ bool Main::init()
     go_main = MenuItemSprite::create(main, main_selected, CC_CALLBACK_1(Main::main_menu, this));
     menu = Menu::create(bottle_list, go_main, NULL);
     menu->setAnchorPoint(Vec2(1, 1));
-    menu->setPosition(Vec2(window.width - 90, window.height - 45));
+    menu->setPosition(Vec2(window.width - 110, window.height - 45));
     menu->alignItemsHorizontally();
     this->addChild(menu, 2);
 
@@ -137,7 +144,7 @@ bool Main::init()
     close = MenuItemSprite::create(closed, close_selected, CC_CALLBACK_1(Main::menu_close, this));
     close_menu = Menu::create(close, NULL);
     close_menu->setAnchorPoint(Vec2(1, 0));
-    close_menu->setPosition(Vec2(window.width - 45, (window.height / 2) + 45));
+    close_menu->setPosition(Vec2(window.width - 64, (window.height / 2) + 64));
     bottle_list_layer->addChild(close_menu, 3);
 
     bg_bottles = Sprite::create("bg_bottles.png");
@@ -315,7 +322,7 @@ void Main::update(float dt)
         coins->setString(to_string((int)coin));
 
         // 슬라임 생성
-        if (random(0, 150) == 100) {
+        if (random(0, 100) == 50) {
             auto slime = Sprite::createWithSpriteFrameName("slime1.png");
             slime->setPosition(Vec2(window.width, random(100, (int)window.height - 150)));
             slime->setName("s" + to_string(slimes));

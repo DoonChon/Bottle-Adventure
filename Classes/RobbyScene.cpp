@@ -1,4 +1,4 @@
-#include "RobbyScene.h"
+﻿#include "RobbyScene.h"
 #include "MainScene.h"
 
 Scene* Robby::createScene()
@@ -14,6 +14,7 @@ bool Robby::init() {
     window = Director::getInstance()->getWinSize();
     isPlay = false;
     isSettings = false;
+
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("bottle_bg.plist");
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("Robby_cloud.plist");
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("bottle.plist");
@@ -44,7 +45,7 @@ bool Robby::init() {
     bg_21->setContentSize(window);
     ui->addChild(bg_21);
 
-    title = Label::createWithTTF("������ ����", "fonts/CookieRun Regular.ttf", 48);
+    title = Label::createWithTTF("병들의 모험", "fonts/CookieRun Regular.ttf", 48);
     title->setPosition(Vec2(window.width / 2, window.height - 64));
     title->setTextColor(Color4B(0, 0, 0, 255));
     ui->addChild(title);
@@ -60,7 +61,7 @@ bool Robby::init() {
     bottle1_img->setPosition(Vec2((window.width / 2) - 128, window.height / 2 + 16));
     ui->addChild(bottle1_img);
 
-    bottle1_text = Label::createWithTTF("�Ϲ� ��", "fonts/CookieRun Regular.ttf", 32);
+    bottle1_text = Label::createWithTTF("일반 병", "fonts/CookieRun Regular.ttf", 32);
     bottle1_text->setAnchorPoint(Vec2(0.5, 1));
     bottle1_text->setPosition(Vec2((window.width / 2) - 128, window.height / 2 - 16));
     bottle1_text->setTextColor(Color4B(0, 0, 0, 255));
@@ -77,7 +78,7 @@ bool Robby::init() {
     Locked_img->setPosition(Vec2((window.width / 2) + 128, window.height / 2 + 16));
     ui->addChild(Locked_img);
 
-    Locked_text = Label::createWithTTF("�� ���� ����\n������ �����̿���.", "fonts/CookieRun Regular.ttf", 28, Size::ZERO, TextHAlignment::CENTER);
+    Locked_text = Label::createWithTTF("준비중이에요.", "fonts/CookieRun Regular.ttf", 28, Size::ZERO, TextHAlignment::CENTER);
     Locked_text->setAnchorPoint(Vec2(0.5, 1));
     Locked_text->setPosition(Vec2((window.width / 2) + 128, window.height / 2 - 16));
     Locked_text->setTextColor(Color4B(0, 0, 0, 255));
