@@ -5,3 +5,4 @@ Made with Doonchon HS Code Club.
 
 ## 업데이트 로그
  - Alpha 0.1 (2020.12.11): 게임 완성, RobbyScene => MainScene 전환 과정에서 메모리 접근 오류 발생.
+ - Beta 0.1 (2020.12.13): 메모리 관련 오류 해결. (이미지 누락으로 인한 버그...)
