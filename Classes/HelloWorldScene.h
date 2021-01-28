@@ -16,16 +16,19 @@ public:
     virtual bool init();
 
     Size window;
-    int repeated = 0;
+    int valid = 0;
+    int id;
+    vector<string> resources = {"bottle_bg", "Robby_cloud", "bottle", "coin", "bg_color"};
 
-    FileUtils* file;
+    FileUtils* file = FileUtils::getInstance();
 
     LayerColor* bg;
     Layer* ui;
 
     Label* author;
-    Label* dchs_cc;
+    Label* loading;
 
+    bool error(string title, string msg);
     void animation(float dt);
     
     // implement the "static create()" method manually

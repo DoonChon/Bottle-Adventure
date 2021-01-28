@@ -7,20 +7,14 @@ Scene* Robby::createScene()
 }
 
 bool Robby::init() {
-    /*if (!Scene::init()) {
+    if (!Scene::init()) {
         return false;
-    }*/
+    }
 
     window = Director::getInstance()->getWinSize();
     isPlay = false;
     isSettings = false;
-
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("bottle_bg.plist");
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("Robby_cloud.plist");
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("bottle.plist");
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("coin.plist");
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("bg_color.plist");
-
+    
     bg = Layer::create();
     this->addChild(bg, 0);
 

@@ -8,12 +8,13 @@ Scene* Main::createScene()
     return Main::create();
 }
 
+// 최적화 어떡하죠...
 bool Main::init()
 {
-    /*if (!Scene::init())
+    if (!Scene::init())
     {
         return false;
-    }*/
+    }
 
     //init stat
     xp = {};
@@ -77,16 +78,10 @@ bool Main::init()
     this->addChild(coins, 5);
 
     // 애니메이션 정의 및 버튼 불러오기
-    
-
-    SpriteFrame* coin_frame_1 = SpriteFrameCache::getInstance()->getSpriteFrameByName("coin_1.png");
-    SpriteFrame* coin_frame_2 = SpriteFrameCache::getInstance()->getSpriteFrameByName("coin_2.png");
-    SpriteFrame* coin_frame_3 = SpriteFrameCache::getInstance()->getSpriteFrameByName("coin_3.png");
-    SpriteFrame* coin_frame_4 = SpriteFrameCache::getInstance()->getSpriteFrameByName("coin_4.png");
-    coin_frames.pushBack(coin_frame_1);
-    coin_frames.pushBack(coin_frame_2);
-    coin_frames.pushBack(coin_frame_3);
-    coin_frames.pushBack(coin_frame_4);
+    coin_frames.pushBack(SpriteFrameCache::getInstance()->getSpriteFrameByName("coin_1.png"));
+    coin_frames.pushBack(SpriteFrameCache::getInstance()->getSpriteFrameByName("coin_2.png"));
+    coin_frames.pushBack(SpriteFrameCache::getInstance()->getSpriteFrameByName("coin_3.png"));
+    coin_frames.pushBack(SpriteFrameCache::getInstance()->getSpriteFrameByName("coin_4.png"));
 
     for (int a = 1; a < 10; a++) {
         string b = "touch_";
@@ -100,11 +95,6 @@ bool Main::init()
         b.append(".png");
         player_frames.pushBack(SpriteFrameCache::getInstance()->getSpriteFrameByName(b));
     }
-    /*touch_frames.pushBack(SpriteFrameCache::getInstance()->getSpriteFrameByName("touch_2.png"));
-    touch_frames.pushBack(SpriteFrameCache::getInstance()->getSpriteFrameByName("touch_3.png"));
-    touch_frames.pushBack(SpriteFrameCache::getInstance()->getSpriteFrameByName("touch_4.png"));
-    touch_frames.pushBack(SpriteFrameCache::getInstance()->getSpriteFrameByName("touch_5.png"));
-    touch_frames.pushBack(SpriteFrameCache::getInstance()->getSpriteFrameByName("touch_6.png"));*/
 
     auto button = Sprite::createWithSpriteFrameName("button_bottles.png");
     button->setContentSize(Size(80, 80));
@@ -226,8 +216,10 @@ void Main::onTouchesEnded(const std::vector<Touch*>& touches, Event* unused_even
             float y = touch->getLocation().y;
             xp.push_back(x);
             yp.push_back(y);
+
+            // 병 움직임 구현 (터치 위치와 상관없이 속도를 일정하게 설정)
             float distance = sqrtf((x - ((window.width / 10) - 20)) * (x - ((window.width / 10) - 20)) + (y - window.height / 2) * (y - window.height / 2));
-            //단, 이렇게 구한 값은 픽셀값이므로 값이 크기때문에 적당히 줄여서 계산해준다.
+            //단, 이렇게 구한 값은 픽셀값이므로 값이 크기때문에 적당히 줄여서 계산해준다. (구글링 와!)
             auto action = MoveTo::create(distance / 1000, Vec2(x, y));
             auto action_del = CallFuncN::create(CC_CALLBACK_1(Main::remove_ui, this, bottle));
             ui->getChildByName(to_string(bottles))->runAction(Sequence::create(action, action_del, NULL));
@@ -248,7 +240,7 @@ void Main::onTouchesEnded(const std::vector<Touch*>& touches, Event* unused_even
             auto action_de = CallFuncN::create(CC_CALLBACK_1(Main::remove_ui, this, t));
             t->runAction(Sequence::create(Spawn::create(fade, scale, NULL), action_de, NULL));
 
-            // 플레이어 애니메이션
+            // 플레이어 병 던지기 애니메이션
             Animation* n_ani = Animation::createWithSpriteFrames(player_frames, 0.02f);
             Animate* animate_n = Animate::create(n_ani);
             auto action_n = Repeat::create(animate_n, 1);
@@ -314,6 +306,51 @@ void Main::update(float dt)
                                 }
                             }
                         }
+                        else {
+                            auto bs = slime_layer->getChildByName("bs" + to_string(j));
+                            if (bs != nullptr) {
+                                auto hpb = bs->getChildByName("sp" + to_string(j));
+                                Rect slimeRect = bs->getBoundingBox();
+                                Rect playerRect = player->getBoundingBox();
+                                if (targetRect.intersectsRect(slimeRect)) {
+                                    ui->removeChildByName(to_string(i));
+                                    //Director::getInstance()->getTextureCache()->removeUnusedTextures();
+                                    slime_hp[j] -= NormalBottle;
+                                    if (hpb != nullptr) {
+                                        hpb->setContentSize(Size(slime_hp[j], 10));
+                                    }
+                                    auto to = TintTo::create(0.05f, Color3B(255, 0, 0));
+                                    auto an = TintTo::create(0.1f, Color3B(Color4B(255, 255, 255, 255)));
+                                    bs->runAction(Sequence::create(to, an, NULL));
+                                    if (slime_hp[j] <= 0 && !is_defeat[j]) {
+                                        is_defeat[j] = true;
+                                        bs->stopAllActions();
+                                        Animation* coin_ani = Animation::createWithSpriteFrames(coin_frames, 0.2f);
+                                        Animate* animate_coin = Animate::create(coin_ani);
+                                        coin_action = RepeatForever::create(animate_coin);
+                                        auto c = Sprite::createWithSpriteFrameName("coin_1.png");
+                                        c->setPosition(bs->getPosition());
+                                        slime_layer->addChild(c);
+                                        c->runAction(coin_action);
+                                        auto jump = JumpTo::create(0.5, c->getPosition(), 50, 1);
+                                        auto fade = FadeTo::create(0.2, 0);
+                                        auto action_del = CallFuncN::create(CC_CALLBACK_1(Main::remove_slime, this, c));
+                                        c->runAction(Sequence::create(jump, fade, action_del, NULL));
+                                        auto action1 = FadeTo::create(0.1f, 0);
+                                        auto action3 = CallFuncN::create(CC_CALLBACK_1(Main::remove_slime, this, s));
+                                        auto action4 = Sequence::create(action1, action3, NULL);
+                                        coin++;
+                                        saved_data->setDoubleForKey("val1", coin);
+                                        if (hpb != nullptr) {
+                                            hpb->runAction(Sequence::create(action1, NULL));
+                                        }
+                                        bs->runAction(action4);
+                                        exp++;
+                                        play_coin++;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -322,32 +359,14 @@ void Main::update(float dt)
         coins->setString(to_string((int)coin));
 
         // 슬라임 생성
-        if (random(0, 100) == 50) {
-            auto slime = Sprite::createWithSpriteFrameName("slime1.png");
-            slime->setPosition(Vec2(window.width, random(100, (int)window.height - 150)));
-            slime->setName("s" + to_string(slimes));
-            slime_layer->addChild(slime);
-            SpriteFrame* slime_frame_1 = SpriteFrameCache::getInstance()->getSpriteFrameByName("slime1.png");
-            SpriteFrame* slime_frame_2 = SpriteFrameCache::getInstance()->getSpriteFrameByName("slime2.png");
-            slime_a.pushBack(slime_frame_1);
-            slime_a.pushBack(slime_frame_2);
-            Animation* slime_ani = Animation::createWithSpriteFrames(slime_a, 0.2f);
-            Animate* animate = Animate::create(slime_ani);
-            slime_action = RepeatForever::create(animate);
-            slime->runAction(slime_action);
-            LayerColor* hp_bar = LayerColor::create(Color4B(255, 0, 0, 255), 90.0f, 10.0f);
-            hp_bar->setPositionY(slime->getContentSize().height);
-            hp_bar->setName("sp" + to_string(slimes));
-            slime->addChild(hp_bar);
-            slimes++;
-            slime_hp.push_back(30);
-            slime_frame.push_back(frame);
-            slime_data.push_back(slime);
-            is_defeat.push_back(false);
-            auto slime_move = MoveTo::create(10.0f, Vec2(window.width / 10 + (player->getContentSize().width / 2), window.height / 2));
-            auto player_damage = CallFuncN::create(CC_CALLBACK_1(Main::player_damage, this, player));
-            slime->runAction(Sequence::create(slime_move, player_damage, NULL));
+        int ran = random(0, 100);
+        if (ran == 50) {
+            createSlime(0);
         }
+        if ((int)random(0, 500) == 12) {
+            createSlime(1);
+        }
+        // 이거 그 거대슬라임이라도 만들어내고 싶다 => 만듦 ㅋㅋ
     }
 }
 
@@ -361,6 +380,12 @@ void Main::bottles_menu(Ref* sender)
             if (s != nullptr) {
                 s->resume();
             }
+            else {
+                auto bs = slime_layer->getChildByName("bs" + to_string(i));
+                if (bs != nullptr) { 
+                    bs->resume(); 
+                }
+            }
         }
     }
     else {
@@ -370,6 +395,12 @@ void Main::bottles_menu(Ref* sender)
             auto s = slime_layer->getChildByName("s" + to_string(i));
             if (s != nullptr) {
                 s->pause();
+            }
+            else {
+                auto bs = slime_layer->getChildByName("bs" + to_string(i));
+                if (bs != nullptr) { 
+                    bs->pause(); 
+                }
             }
         }
     }
@@ -399,6 +430,10 @@ void Main::menu_close(Ref* sender)
             auto s = slime_layer->getChildByName("s" + to_string(i));
             if (s != nullptr) {
                 s->resume();
+            }
+            else {
+                auto bs = slime_layer->getChildByName("bs" + to_string(i));
+                if (bs != nullptr) { bs->pause(); }
             }
         }
     }
@@ -438,6 +473,63 @@ void Main::game_over()
 {
     saved_data->setDoubleForKey("val2", play_coin);
     Director::getInstance()->replaceScene(TransitionFade::create(0.5f, GameOver::createScene()));
+}
+
+void Main::createSlime(int type)
+{
+    if (type == 0) {
+        auto slime = Sprite::createWithSpriteFrameName("slime1.png");
+        slime->setPosition(Vec2(window.width, random(100, (int)window.height - 150)));
+        slime->setName("s" + to_string(slimes));
+        slime_layer->addChild(slime);
+        SpriteFrame* slime_frame_1 = SpriteFrameCache::getInstance()->getSpriteFrameByName("slime1.png");
+        SpriteFrame* slime_frame_2 = SpriteFrameCache::getInstance()->getSpriteFrameByName("slime2.png");
+        slime_a.pushBack(slime_frame_1);
+        slime_a.pushBack(slime_frame_2);
+        Animation* slime_ani = Animation::createWithSpriteFrames(slime_a, 0.2f);
+        Animate* animate = Animate::create(slime_ani);
+        slime_action = RepeatForever::create(animate);
+        slime->runAction(slime_action);
+        LayerColor* hp_bar = LayerColor::create(Color4B(255, 0, 0, 255), 90.0f, 10.0f);
+        hp_bar->setPositionY(slime->getContentSize().height);
+        hp_bar->setName("sp" + to_string(slimes));
+        slime->addChild(hp_bar);
+        slimes++;
+        slime_hp.push_back(30);
+        slime_frame.push_back(frame);
+        slime_data.push_back(slime);
+        is_defeat.push_back(false);
+        auto slime_move = MoveTo::create(10.0f, Vec2(window.width / 10 + (player->getContentSize().width / 2), window.height / 2));
+        auto player_damage = CallFuncN::create(CC_CALLBACK_1(Main::player_damage, this, player));
+        slime->runAction(Sequence::create(slime_move, player_damage, NULL));
+    }
+    else if (type == 1) {
+        auto slime = Sprite::createWithSpriteFrameName("slime1.png");
+        slime->setScale(2.0f);
+        slime->setPosition(Vec2(window.width, window.height / 2));
+        slime->setName("bs" + to_string(slimes));
+        slime_layer->addChild(slime);
+        SpriteFrame* slime_frame_1 = SpriteFrameCache::getInstance()->getSpriteFrameByName("slime1.png");
+        SpriteFrame* slime_frame_2 = SpriteFrameCache::getInstance()->getSpriteFrameByName("slime2.png");
+        slime_a.pushBack(slime_frame_1);
+        slime_a.pushBack(slime_frame_2);
+        Animation* slime_ani = Animation::createWithSpriteFrames(slime_a, 0.2f);
+        Animate* animate = Animate::create(slime_ani);
+        slime_action = RepeatForever::create(animate);
+        slime->runAction(slime_action);
+        LayerColor* hp_bar = LayerColor::create(Color4B(255, 0, 0, 255), 90.0f, 10.0f);
+        hp_bar->setPositionY(slime->getContentSize().height);
+        hp_bar->setName("sp" + to_string(slimes));
+        slime->addChild(hp_bar);
+        slimes++;
+        slime_hp.push_back(90);
+        slime_frame.push_back(frame);
+        slime_data.push_back(slime);
+        is_defeat.push_back(false);
+        auto slime_move = MoveTo::create(10.0f, Vec2(window.width / 10 + (player->getContentSize().width / 2), window.height / 2));
+        auto player_damage = CallFuncN::create(CC_CALLBACK_1(Main::player_damage, this, player));
+        slime->runAction(Sequence::create(slime_move, player_damage, NULL));
+    }
 }
 
 /* int random()

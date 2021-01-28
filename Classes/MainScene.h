@@ -77,6 +77,7 @@ public:
     void player_damage(Ref* sender, Ref* Object);
     void bottle_clicked(Ref* sender);
     void game_over();
+    void createSlime(int type);
 
     // implement the "static create()" method manually
     CREATE_FUNC(Main);
